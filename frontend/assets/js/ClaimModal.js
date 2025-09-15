@@ -1,19 +1,10 @@
 // Load form into modal container
 $(function () {
-  $("#claimFormModalContainer").load("ClaimForm.html");
-});
-
-// Open modal when user clicks
-$(document).on("click", "#openFileModal", function () {
-  if (currentUser.role !== "Policyholder" && currentUser.role !== "Agent") {
-    alert("Only policyholders or agents can submit claims.");
-    return;
-  }
-  $("#claimFormModal").modal("show");
+  $("#claimFormModalContainer").load("/frontend/pages/ClaimForm.html");
 });
 
 // Handle form submission (delegated binding)
-$(document).on("submit", "#claimForm", function (e) {
+$(document).on("submit", "#claimFormModal", function (e) {
   e.preventDefault();
 
   const newClaim = {

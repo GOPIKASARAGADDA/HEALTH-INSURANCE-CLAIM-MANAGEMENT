@@ -35,10 +35,4 @@ body {
  
 /* small util */
 .small-muted { color:#6c757d; }
- 
-/* footer spacing */
-footer { margin-top: auto; }
- 
-/* dark-mode simple (toggle) */
-body.dark-mode { background: #101219; color: #ddd; }
-body.dark-mode .card { background: #0b1220; color: #ddd; }
+  

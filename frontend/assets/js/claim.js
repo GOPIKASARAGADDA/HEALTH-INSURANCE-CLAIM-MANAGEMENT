@@ -189,7 +189,7 @@ function setupHandlers() {
   $("#refreshBtn").on("click", renderTable);
  
   // Action buttons (delegation)
-  $("#actionButtons").on("click", "#openFileModal", function () { $("#fileClaimModal").modal("show"); });
+  $("#actionButtons").on("click", "#openFileModal", function () { $("#claimFormModal").modal("show"); });
   $("#actionButtons").on("click", "#myClaimsBtn", function () { $("#filterStatus").val(""); $("#filterType").val(""); renderTable(); });
  
   // Table action buttons
@@ -214,13 +214,13 @@ function setupHandlers() {
   $("#claimsTable tbody").on("click", ".assist-claim", function () {
     const id = $(this).data("id");
     const c = claims.find(x => x.claimId === id);
-    $("#fileClaimModal").modal("show");
+    $("#claimFormModal").modal("show");
     $("#policyId").val(c.policyId);
     $("#claimantName").val(c.claimant);
   });
  
   // File claim modal submit
-  $("#fileClaimForm").on("submit", function (e) {
+  $("#claimFormModal").on("submit", function (e) {
     e.preventDefault();
     const form = {
       claimant: $("#claimantName").val(),
@@ -233,7 +233,7 @@ function setupHandlers() {
       // documents omitted (demo)
     };
     submitClaim(form);
-    $("#fileClaimModal").modal("hide");
+    $("#claimFormModal").modal("hide");
     this.reset();
   });
 }

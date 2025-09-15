@@ -1,36 +1,63 @@
-<!-- Claim Form Modal -->
-<div class="modal fade" id="claimFormModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+<!-- File New Claim Modal -->
+<div class="modal fade" id="claimFormModal" tabindex="-1" aria-labelledby="claimFormModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
+      
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="claimFormModalLabel">Submit New Claim</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
       <form id="claimForm">
-        <div class="modal-header">
-          <h5 class="modal-title">New Claim</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
         <div class="modal-body">
-          <div class="mb-3">
-            <label for="policyId" class="form-label">Policy ID</label>
-            <input type="text" class="form-control" id="policyId" required>
-          </div>
-          <div class="mb-3">
-            <label for="claimType" class="form-label">Claim Type</label>
-            <select class="form-select" id="claimType" required>
-              <option value="Hospitalization">Hospitalization</option>
-              <option value="Accident">Accident</option>
-              <option value="OPD">OPD</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="claimAmount" class="form-label">Amount</label>
-            <input type="number" class="form-control" id="claimAmount" required>
-          </div>
-          <div class="mb-3">
-            <label for="claimNotes" class="form-label">Notes</label>
-            <textarea class="form-control" id="claimNotes"></textarea>
+          <div class="row g-3">
+
+            <!-- Policyholder Details -->
+            <div class="col-md-6">
+              <label for="policyId" class="form-label">Policy Number/ID</label>
+              <input type="text" class="form-control" id="policyId" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="policyHolderName" class="form-label">Policyholder Name</label>
+              <input type="text" class="form-control" id="policyHolderName" required>
+            </div>
+
+            <!-- Claim Details -->
+            <div class="col-md-6">
+              <label for="claimType" class="form-label">Claim Type</label>
+              <select id="claimType" class="form-select" required>
+                <option value="">Choose...</option>
+                <option value="hospitalization">Hospitalization</option>
+                <option value="medicines">Medicines</option>
+                <option value="consultation">Doctor Consultation</option>
+                <option value="others">Others</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="claimAmount" class="form-label">Claim Amount (₹)</label>
+              <input type="number" class="form-control" id="claimAmount" required>
+            </div>
+
+            <div class="col-12">
+              <label for="claimDescription" class="form-label">Claim Description</label>
+              <textarea class="form-control" id="claimDescription" rows="3" placeholder="Brief details of treatment/expense" required></textarea>
+            </div>
+
+            <!-- Upload -->
+            <div class="col-12">
+              <label for="claimDocuments" class="form-label">Supporting Documents</label>
+              <input type="file" class="form-control" id="claimDocuments" multiple>
+              <div class="form-text">Upload bills, prescriptions, or hospital reports.</div>
+            </div>
+
           </div>
         </div>
+
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Submit Claim</button>
+          <button type="reset" class="btn btn-secondary">Clear</button>
+          <button type="submit" class="btn btn-success">Submit Claim</button>
         </div>
       </form>
     </div>
