@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/assets/css/style.css">
+
+    <link rel="stylesheet" href="/frontend/assets/css/claim.css">
+    <title>Claim Management</title>
+
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+
+
+    <!-- page content -->
+    <main class="container mt-5 pt-5 mb-5">
+        <div class="claim-hero rounded-3 p-4 text-white mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1">Claim Management</h2>
+                    <p class="mb-0 small">File new claims, track status, and manage assigned claims — role-based UI.</p>
+                </div>
+
+                <!-- Role indicator (for quick glance) -->
+                <div class="text-end">
+                    <div class="small text-light">Signed in as</div>
+                    <div id="topUserBadge" class="fw-bold">Guest</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- LEFT: Quick actions -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Quick Actions</h5>
+                        <div id="actionButtons" class="d-grid gap-2">
+                            <!-- buttons rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Small info / tips area (visually helpful) -->
+                <div class="card mt-3 shadow-sm">
+                    <div class="card-body">
+                        <h6>Tips</h6>
+                        <ul class="small mb-0">
+                            <li>Keep your policy ID handy when filing a claim.</li>
+                            <li>Upload clear medical documents to speed up processing.</li>
+                            <li>Use the search to quickly find claim IDs or hospitals.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Main area (search, filters, table) -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Claims</h5>
+                            <div class="d-flex gap-2">
+                                <input id="searchBox" class="form-control form-control-sm" style="min-width:220px;"
+                                    placeholder="Search claim id / policy / provider" />
+                                <button id="refreshBtn" class="btn btn-sm btn-outline-secondary">Refresh</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 d-flex gap-2 align-items-center">
+                            <select id="filterStatus" class="form-select form-select-sm w-auto">
+                                <option value="">All statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Verified">Verified</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="NeedInfo">Need More Info</option>
+                            </select>
+
+                            <select id="filterType" class="form-select form-select-sm w-auto">
+                                <option value="">All types</option>
+                                <option value="Hospitalization">Hospitalization</option>
+                                <option value="Accident">Accident</option>
+                                <option value="OPD">OPD</option>
+                            </select>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="claimsTable" class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Claim ID</th>
+                                        <th>Policy ID</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Submitted</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="claimsTableBody">
+                                    <!-- populated by claims.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <!-- Modals -->
+
+    <div id="claimFormModalContainer"></div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/frontend/assets/js/script.js"></script>
+
+    <script src="/frontend/assets/js/claim.js"></script>
+    <script src="/frontend/assets/js/ClaimModal.js"></script>
+
+    <script>
+        // Load navbar and simulate login for this page (remove the simulation when real auth arrives)
+        $(function () {
+            $("#navbar-root").load("navbar.html", function () {
+                // simulate a logged-in user for the claims page so profile/dropdown appears
+                loginAs("John", "ii"); // change role here or use navbar dropdown to switch
+                renderNavbar(); // refresh after load
+            });
+
+            $("#yearEl").text(new Date().getFullYear());
+        });
+    </script>
+</body>
+
+</html>

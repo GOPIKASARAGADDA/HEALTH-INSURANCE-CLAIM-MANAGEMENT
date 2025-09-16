@@ -1,0 +1,38 @@
+/* page background & hero */
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--muted-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.claim-hero {
+  background: linear-gradient(135deg, rgba(13,110,253,0.85), rgba(13,110,253,0.65));
+  color: #fff;
+  padding: 22px;
+  border-radius: 8px;
+}
+ 
+/* cards */
+.card { border-radius: 0.7rem; }
+ 
+/* action buttons grid */
+#actionButtons .btn { justify-content: flex-start; }
+ 
+/* status badges */
+.badge-status { padding: .35em .6em; border-radius:.5rem; font-size:.78rem; }
+.badge-pending { background:#fff3cd; color:#856404; }
+.badge-verified { background:#cff4fc; color:#055160; }
+.badge-approved { background:#d1e7dd; color:#0f5132; }
+.badge-rejected { background:#f8d7da; color:#842029; }
+.badge-needs { background:#fff0f6; color:#6f1d5b; }
+ 
+/* table hover */
+.table-hover tbody tr:hover { background:#f1f5fb; }
+ 
+/* make modal footer buttons inline & neat */
+#detailFooter .btn { margin-left:6px; }
+ 
+/* small util */
+.small-muted { color:#6c757d; }
+  
