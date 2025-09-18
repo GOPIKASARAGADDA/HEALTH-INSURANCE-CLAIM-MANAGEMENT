@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Policyholder Dashboard | HealthClaimSys</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">HealthClaimSys</a>
+        <div class="form-check form-switch ms-auto">
+          <input class="form-check-input" type="checkbox" id="darkModeToggle" />
+          <label class="form-check-label text-white" for="darkModeToggle"
+            >Dark Mode</label
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Dashboard Section -->
+    <section class="module-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card module-card p-4">
+              <h2 class="mb-3">
+                Welcome, <span id="userDisplay">Policyholder</span>
+              </h2>
+              <p>
+                Your role:
+                <strong><span id="roleDisplay">POLICYHOLDER</span></strong>
+              </p>
+
+              <hr />
+
+              <div id="roleContent">
+                <h5 class="mb-3">Your Insurance Dashboard</h5>
+                <ul class="list-group">
+                  <li class="list-group-item">📄 View active policies</li>
+                  <li class="list-group-item">📝 Submit a new claim</li>
+                  <li class="list-group-item">📊 Track claim status</li>
+                  <li class="list-group-item">📞 Contact support</li>
+                </ul>
+              </div>
+
+              <button onclick="logout()" class="btn btn-danger mt-4 w-100">
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-bottom text-center">
+          © 2025 HealthClaimSys. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/js/dashboard.js"></script>
+  </body>
+</html>
