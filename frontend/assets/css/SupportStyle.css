@@ -1,0 +1,30 @@
+
+.container {
+    max-width: 1200px;
+}
+#support-container{
+    max-width: 900px;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-primary, .btn-success {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table thead th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}

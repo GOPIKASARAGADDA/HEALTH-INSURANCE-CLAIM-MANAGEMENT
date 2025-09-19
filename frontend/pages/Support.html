@@ -3,9 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Customer Support System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/frontend/assets/css/style.css">  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
+
+  <link rel="stylesheet" href="/frontend/assets/css/SupportStyle.css">
 </head>
 <body>
-    
+<div id="navbar"></div>
+
+    <div id="support-container" class="container mt-5"> 
+        <!-- margin top 5 -->
+        <h2 class="text-center mb-4">Customer Support Portal</h2>
+
+        <div id="user-dashboard" class="card p-4">
+            <!-- p-4 padding applied in all sides (left,right,top,bottom) -->
+            <h4 class="card-title">My Tickets</h4>
+            <button id="createTicketBtn" class="btn btn-primary mb-3">Submit a New Ticket</button>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Issue Description</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tickets-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div id="create-ticket-form-section" class="card p-4 mt-4" style="display:none;">
+            <h4 class="card-title">Submit a New Ticket</h4>
+            <form id="ticket-form">
+                <div class="form-group">
+                    <label for="issueDescription">Issue Description</label>
+                    <textarea class="form-control" id="issueDescription" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Submit Ticket</button>
+                <button type="button" class="btn btn-secondary" id="backToDashboardBtn">Cancel</button>
+            </form>
+        </div>
+
+        <div class="modal fade" id="ticketDetailsModal" tabindex="-1" role="dialog" aria-labelledby="ticketDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ticketDetailsModalLabel">Ticket Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-body-content">
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer"></div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="/frontend/assets/js/script.js"></script>
+    <script src="/frontend/assets/js/SupportScript.js"></script>
 </body>
 </html>

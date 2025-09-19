@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Support Dashboard</title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/frontend/assets/css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/frontend/assets/css/admin-style.css">
+
+</head>
+<body>
+ <div id="navbar"></div>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 text-white">Administrator Support Panel</h2>
+
+        <div class="card p-4">
+            <h4 class="card-title">All Support Tickets</h4>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="alert alert-info text-center">
+                        <strong>Open Tickets:</strong> <span id="open-tickets-count">3</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-success text-center">
+                        <strong>Resolved Tickets:</strong> <span id="resolved-tickets-count">1</span>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>User ID</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-tickets-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="adminTicketModal" tabindex="-1" role="dialog" aria-labelledby="adminTicketModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="adminTicketModalLabel">Ticket Details - <span id="modalTicketId"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="ticket-info mb-4">
+                            <p><strong>Status:</strong> <span id="modalTicketStatus"></span></p>
+                            <p><strong>Created By:</strong> <span id="modalUserId"></span></p>
+                            <p><strong>Description:</strong> <span id="modalIssueDescription"></span></p>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h5>Reply to User</h5>
+                        <form id="reply-form">
+                            <div class="form-group">
+                                <textarea class="form-control" id="adminReply" rows="3" placeholder="Type your reply here..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Reply</button>
+                            <button type="button" class="btn btn-success" id="resolveTicketBtn">Resolve Ticket</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/frontend/assets/js/script.js"></script>
+    <script src="/frontend/assets/js/admin-script.js"></script>
+</body>
+</html>
