@@ -1,11 +1,4 @@
-/* page background & hero */
-body {
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--muted-bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+
 .claim-hero {
   background: linear-gradient(135deg, rgba(13,110,253,0.85), rgba(13,110,253,0.65));
   color: #fff;
@@ -14,7 +7,8 @@ body {
 }
  
 /* cards */
-.card { border-radius: 0.7rem; }
+.card { border-radius: 0.7rem;
+ }
  
 /* action buttons grid */
 #actionButtons .btn { justify-content: flex-start; }
@@ -30,9 +24,5 @@ body {
 /* table hover */
 .table-hover tbody tr:hover { background:#f1f5fb; }
  
-/* make modal footer buttons inline & neat */
-#detailFooter .btn { margin-left:6px; }
- 
-/* small util */
-.small-muted { color:#6c757d; }
+.form-label { font-weight:600; }
   

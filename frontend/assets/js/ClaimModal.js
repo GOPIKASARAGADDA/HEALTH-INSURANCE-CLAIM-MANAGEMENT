@@ -12,7 +12,7 @@ $(document).on("submit", "#claimFormModal", function (e) {
     policy: $("#policyId").val(),
     type: $("#claimType").val(),
     amount: $("#claimAmount").val(),
-    status: "Submitted",
+    status: "Pending",
     date: new Date().toISOString().split("T")[0]
   };
 

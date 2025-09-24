@@ -1,5 +1,5 @@
      $(function(){
-      $("#navbar").load("/frontend/components/navbar.html");
+      $("#navbar").load("/frontend/components/navbar.html",function () { renderNavbar(); });
       $("#modules").load("/frontend/components/modules.html");
       $("#footer").load("/frontend/components/footer.html");
     });
@@ -10,12 +10,13 @@
 
     // Simulating login state (later from backend/authentication)
 let isLoggedIn = false;
-let currentUser = { name: "John", role: "Admin" };
+let currentUser = { name: "John", role: "Agent" };
 
 if (currentUser.role === "Admin" || currentUser.role === "Agent" || currentUser.role === "Policyholder" || currentUser.role === "Claim Adjuster") {
   isLoggedIn = true;
 }
- 
+
+// Render navbar based on login state (yet pending to be CHANGE frontend necessarily in navbar.html)
 // function renderNavbar() {
 //   if (isLoggedIn) {
 //     $(".auth-only").addClass("d-none"); // hide login/register
@@ -44,7 +45,3 @@ if (currentUser.role === "Admin" || currentUser.role === "Agent" || currentUser.
 //   renderNavbar();
 // }
  
-// // On page load
-// $(document).ready(() => {
-//   renderNavbar();
-// });

@@ -67,9 +67,9 @@ function badgeForStatus(status) {
 /* ------------------------------
    Rendering UI
    ------------------------------ */
-function renderActionButtons() {
-  const $box = $("#actionButtons");
-  $box.empty();
+function renderActionButtons() { // top action buttons based on role
+  const $box = $("#actionButtons"); // container for action buttons
+  $box.empty(); // clear existing
  
   if (!isLoggedIn) {
     $box.append(`<button class="btn btn-outline-primary" disabled>Login to manage claims</button>`);
@@ -107,9 +107,9 @@ function renderTable() {
   const statusFilter = $("#filterStatus").val();
   const typeFilter = $("#filterType").val();
   const role = currentUser.role;
- 
+
   // role-based visibility simulation
-  const visible = claims.filter(c => {
+  const visible = claims.filter(c => { //uses Array.prototype.filter() to filter the claims array based on certain conditions and returns a new array containing only the claims that meet those conditions.
     if (role === "Policyholder") {
       // simulate userId U-101 for demo
       if (c.userId !== "U-101") return false;
@@ -122,12 +122,13 @@ function renderTable() {
  
     if (statusFilter && c.status !== statusFilter) return false;
     if (typeFilter && c.type !== typeFilter) return false;
- 
-    if (q) {
+
+    if (q) { // search query
+      //haystack search in multiple fields
       const hay = `${c.claimId} ${c.policyId} ${c.provider} ${c.type} ${c.claimant} ${c.status}`.toLowerCase();
-      if (!hay.includes(q)) return false;
+      if (!hay.includes(q)) return false; //if the search query is not found in the haystack, the function returns false, indicating that this claim should be excluded from the filtered results.
     }
-    return true;
+    return true;//if all conditions are met, the function returns true, indicating that this claim should be included in the filtered results.
   });
  
   if (!visible.length) {
@@ -135,7 +136,8 @@ function renderTable() {
     return;
   }
  
-  visible.forEach(c => {
+  visible.forEach(c => { 
+    // append a row for each visible claim,but better appraoch is build a single large str and append once as .append() inside a loopn can be inefficient for large data sets/rows
     $tbody.append(`
       <tr>
         <td>${c.claimId}</td>
@@ -172,16 +174,16 @@ function renderActionsForRow(c) {
    ------------------------------ */
 function setupHandlers() {
   // role changes from navbar
-  $(document).on("roleChanged authChanged", function (e, data) {
-    if (isLoggedIn && currentUser) {
-      renderActionButtons();
-      renderTable();
-    } else {
-      renderActionButtons();
-      renderTable();
-      $("#topUserBadge").text("Guest");
-    }
-  });
+  // $(document).on("roleChanged authChanged", function (e, data) {
+  //   if (isLoggedIn && currentUser) {
+  //     renderActionButtons();
+  //     renderTable();
+  //   } else {
+  //     renderActionButtons();
+  //     renderTable();
+  //     $("#topUserBadge").text("Guest");
+  //   }
+  // });
  
   // Search & filters
   $("#searchBox").on("input", renderTable);
@@ -194,7 +196,7 @@ function setupHandlers() {
  
   // Table action buttons
   $("#claimsTable tbody").on("click", ".view-claim", function () {
-    const id = $(this).data("id"); openClaimDetail(id);
+    const id = $(this).data("id"); openClaimDetail(id); //this refers to the clicked button and data("id") retrieves the value of the data-id attribute of that button.
   });
   $("#claimsTable tbody").on("click", ".approve-claim", function () {
     const id = $(this).data("id"); updateClaimStatus(id, "Approved", "Approved by admin");
@@ -215,27 +217,12 @@ function setupHandlers() {
     const id = $(this).data("id");
     const c = claims.find(x => x.claimId === id);
     $("#claimFormModal").modal("show");
-    $("#policyId").val(c.policyId);
-    $("#claimantName").val(c.claimant);
+    $("#policyId").val(c.policyId); //prefill policy id in form
+    $("#claimAmount").val(c.amount);
+    $("#policyHolderName").val(c.claimant);
+
   });
  
-  // File claim modal submit
-  $("#claimFormModal").on("submit", function (e) {
-    e.preventDefault();
-    const form = {
-      claimant: $("#claimantName").val(),
-      policyId: $("#policyId").val(),
-      claimType: $("#claimType").val(),
-      incidentDate: $("#incidentDate").val(),
-      provider: $("#provider").val(),
-      claimAmount: parseFloat($("#claimAmount").val()),
-      remarks: $("#remarks").val()
-      // documents omitted (demo)
-    };
-    submitClaim(form);
-    $("#claimFormModal").modal("hide");
-    this.reset();
-  });
 }
  
 /* ------------------------------
@@ -346,34 +333,36 @@ function assignClaimTo(claimId, adjusterId) {
 }
  
 /* ------------------------------
-   Init
+   Init startup
    ------------------------------ */
 $(function () {
   // Setup UI handlers
   setupHandlers();
- 
-  // If navbar already had a logged in user, use that; else guest
-  if (typeof currentUser !== "undefined" && currentUser.role) {
-    // currentUser variable comes from navbar.js global; if not present, default to guest
-  } else {
-    currentUser = { name: "Guest", role: "Guest" };
-    isLoggedIn = false;
-  }
- 
-  // react to role changes from navbar
-  $(document).on("roleChanged", function (e, user) {
-    if (user && user.role) {
-      currentUser = user;
-      isLoggedIn = true;
-    } else {
-      currentUser = { name: "Guest", role: "Guest" };
-      isLoggedIn = false;
-    }
-    renderActionButtons();
-    renderTable();
-  });
- 
+
   // initial render
   renderActionButtons();
   renderTable();
+ 
+  // // If navbar already had a logged in user, use that; else guest
+  // if (typeof currentUser !== "undefined" && currentUser.role) {
+  //   // currentUser variable comes from navbar.js global; if not present, default to guest
+  // } else {
+  //   currentUser = { name: "Guest", role: "Guest" };
+  //   isLoggedIn = false;
+  // }
+ 
+  // react to role changes from navbar
+  // $(document).on("roleChanged", function (e, user) {
+  //   if (user && user.role) {
+  //     currentUser = user;
+  //     isLoggedIn = true;
+  //   } else {
+  //     currentUser = { name: "Guest", role: "Guest" };
+  //     isLoggedIn = false;
+  //   }
+  //   renderActionButtons();
+  //   renderTable();
+  // });
+ 
+  
 });
