@@ -4,13 +4,21 @@ let currentUser = {}; // e.g., {name: "John", role: "Policyholder"}
 
 // Load Navbar/Footer/Modules
 $(function() {
-  $("#navbar").load("/frontend/components/navbar.html", function(response, status, xhr) {
+
+	// Load saved user from localStorage
+	  const savedUser = JSON.parse(localStorage.getItem("user"));
+	  if (savedUser) {
+	    isLoggedIn = true;
+	    currentUser = savedUser;
+	  }
+
+  $("#navbar").load("/components/navbar.html", function(response, status, xhr) {
     if (status === "error") console.error("Navbar load failed:", xhr.status, xhr.statusText);
     renderNavbar(); // call render after navbar is loaded
   });
 
-  $("#modules").load("/frontend/components/modules.html");
-  $("#footer").load("/frontend/components/footer.html");
+  $("#modules").load("/components/modules.html");
+  $("#footer").load("/components/footer.html");
 });
 
 // ---------------------------
@@ -42,7 +50,7 @@ function renderNavbar() {
       case "agent":
         $(".role-agent").removeClass("d-none");
         break;
-      case "claim adjuster":
+      case "claim_adjuster":
         $(".role-claimadjuster").removeClass("d-none");
         break;
       case "admin":
