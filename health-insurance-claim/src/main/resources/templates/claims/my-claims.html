@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+   <meta charset="UTF-8">
+   <title>My Claims</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+   <style>
+       body {
+           background-color: #f5f7fa;
+           font-family: 'Poppins', sans-serif;
+           display: flex;
+           flex-direction: column;
+           min-height: 100vh;
+       }
+       main { flex: 1; }
+       .claims-container {
+           max-width: 1000px;
+           margin: 3rem auto;
+           background: #fff;
+           border-radius: 12px;
+           box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+           padding: 2rem;
+       }
+       .table th {
+           background-color: #2c3e50;
+           color: white;
+           font-weight: 500;
+       }
+       .table td, .table th {
+           vertical-align: middle;
+           text-align: center;
+       }
+       .status-badge {
+           font-weight: 600;
+           padding: 0.5rem 1rem;
+           border-radius: 20px;
+       }
+   </style>
+</head>
+ 
+<body>
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+ 
+<main>
+   <div class="container claims-container">
+       <h3 class="text-center mb-4">My Claims</h3>
+ 
+       <!-- If no claims exist -->
+       <div th:if="${#lists.isEmpty(claims)}" class="text-center text-muted">
+           <i class="bi bi-inbox display-6"></i>
+           <p class="mt-3">You haven’t submitted any claims yet.</p>
+           <a th:href="@{/claims/new}" class="btn btn-primary">
+               <i class="bi bi-plus-circle"></i> Submit a New Claim
+           </a>
+       </div>
+ 
+       <!-- If claims exist -->
+       <div th:if="${!#lists.isEmpty(claims)}">
+		<table class="table table-striped">
+		    <thead>
+		        <tr>
+		            <th>Claim ID</th>
+		            <th>Policy Number</th>
+		            <th>Claim Amount</th>
+		            <th>Claim Status</th>
+		            <th>Actions</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <tr th:each="claim : ${claims}">
+		            <td th:text="${claim.claimId}">1</td>
+		            <td th:text="${claim.policy.policyNumber}">POL123</td>
+		            <td th:text="'₹ ' + ${claim.claimAmount}">₹ 5000</td>
+		            <td>
+		                <span th:if="${claim.claimStatus.name() == 'PENDING'}" class="badge bg-warning text-dark">Pending</span>
+		                <span th:if="${claim.claimStatus.name() == 'APPROVED'}" class="badge bg-success">Approved</span>
+		                <span th:if="${claim.claimStatus.name() == 'REJECTED'}" class="badge bg-danger">Rejected</span>
+		                <span th:if="${claim.claimStatus == null}" class="badge bg-secondary">Unknown</span>
+		            </td>
+		            <td>
+		                <a th:href="@{/claims/{claimId}(claimId=${claim.claimId})}" class="btn btn-sm btn-primary">View</a>
+		                <a th:href="@{/documents/upload-documents/{claimId}(claimId=${claim.claimId})}" class="btn btn-sm btn-success">Upload Document</a>
+		            </td>
+		        </tr>
+		        <tr th:if="${#lists.isEmpty(claims)}">
+		            <td colspan="5" class="text-center">No claims found.</td>
+		        </tr>
+		    </tbody>
+		</table>
+		 
+       </div>
+   </div>
+</main>
+ 
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/assets/js/script.js}"></script>
+</body>
+</html>
+ 
