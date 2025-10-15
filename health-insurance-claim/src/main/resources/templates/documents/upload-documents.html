@@ -68,8 +68,12 @@
                     <!-- Document Type -->
                     <div class="mb-3">
                         <label for="documentType" class="form-label">Document Type</label>
-                        <input type="text" th:field="*{documentType}" id="documentType" class="form-control"
-                               placeholder="Enter document type" required>
+						<select th:field="*{documentType}" class="form-control" required>
+						    <option th:each="type : ${T(com.genc.healthinsurance.document.entity.DocumentType).values()}"
+						            th:value="${type}"
+						            th:text="${type}">
+						    </option>
+						</select>
                     </div>
  
                     <!-- File Upload -->

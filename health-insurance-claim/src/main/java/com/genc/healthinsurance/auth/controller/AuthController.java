@@ -32,7 +32,6 @@ public class AuthController {
             User user = userOpt.get();
             session.setAttribute("loggedInUser", user);
             session.setAttribute("loggedInUserId", user.getUserId());
-            session.setAttribute("username", user.getUsername());
             session.setAttribute("userRole", user.getRole().name().toUpperCase());
             return "redirect:/home";
         } else {

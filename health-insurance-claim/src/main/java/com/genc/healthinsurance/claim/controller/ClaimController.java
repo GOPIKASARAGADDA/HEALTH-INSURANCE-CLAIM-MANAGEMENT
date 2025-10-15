@@ -78,7 +78,9 @@ public class ClaimController {
     @GetMapping("/{claimId}")
     public String getClaimDetails(@PathVariable Integer claimId, Model model) {
         Optional<Claim> claimOpt = claimService.getClaimDetails(claimId);
+        
         if (claimOpt.isPresent()) {
+        	
             model.addAttribute("claim", claimOpt.get());
             return "claims/view-claim";
         } else {

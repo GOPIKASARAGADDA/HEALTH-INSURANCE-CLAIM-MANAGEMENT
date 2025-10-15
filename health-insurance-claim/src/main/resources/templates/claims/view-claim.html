@@ -117,10 +117,11 @@
             <div class="documents-list" th:if="${claim.documents != null and #lists.size(claim.documents) > 0}">
                 <h5>Uploaded Documents</h5>
                 <div th:each="doc : ${claim.documents}" class="doc-item">
-                    <span th:text="${doc.documentName} + ' (' + doc.documentType + ')'"></span>
-                    <a th:href="@{${doc.documentPath}}" class="btn btn-sm btn-outline-primary" target="_blank">
-                        <i class="bi bi-file-earmark-text"></i> View
-                    </a>
+                    <span th:text="${doc.documentName}"></span>
+					<a th:href="@{/documents/view/{id}(id=${doc.documentId})}"
+					   class="btn btn-sm btn-outline-primary">
+					    <i class="bi bi-file-earmark-text"></i> View
+					</a>
                 </div>
             </div>
  
