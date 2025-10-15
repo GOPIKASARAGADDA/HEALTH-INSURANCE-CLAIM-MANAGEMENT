@@ -37,7 +37,7 @@ public class DocumentService {
         document.setClaim(claim);
      
         // Prepare upload directory (inside static folder)
-        String uploadDir = "src/main/resources/static/uploads/";
+        String uploadDir = "uploads/";
      
         // Clean filename
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());

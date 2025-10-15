@@ -19,5 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
         // Ensure default static paths are also handled
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/uploads/**")
+        .addResourceLocations("file:uploads/");
     }
 }
