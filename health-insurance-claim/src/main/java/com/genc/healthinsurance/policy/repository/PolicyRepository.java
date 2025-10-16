@@ -11,5 +11,5 @@ import com.genc.healthinsurance.policy.entity.Policy;
 @Repository
 public interface PolicyRepository extends JpaRepository<Policy, Integer> {
     // Used by ClaimService to fetch policies available for a policyholder to file a claim
-    List<Policy> findByPolicyHolder(User user);
+    List<Policy> findByPolicyHolder(User policyHolder);
 }

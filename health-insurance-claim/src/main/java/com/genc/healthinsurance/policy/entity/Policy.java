@@ -6,6 +6,8 @@ import com.genc.healthinsurance.auth.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,8 +34,9 @@ public class Policy {
     @Column(nullable = false)
     private Double coverageAmount;
  
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String policyStatus; // ACTIVE / INACTIVE / CANCELLED
+    private PolicyStatus policyStatus; // ACTIVE / INACTIVE / CANCELLED
  
     @Column(nullable = false)
     private LocalDate createdDate = LocalDate.now();
@@ -70,11 +73,11 @@ public class Policy {
 		this.coverageAmount = coverageAmount;
 	}
 
-	public String getPolicyStatus() {
+	public PolicyStatus getPolicyStatus() {
 		return policyStatus;
 	}
 
-	public void setPolicyStatus(String policyStatus) {
+	public void setPolicyStatus(PolicyStatus policyStatus) {
 		this.policyStatus = policyStatus;
 	}
 

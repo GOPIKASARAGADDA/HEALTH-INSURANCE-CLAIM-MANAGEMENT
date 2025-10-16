@@ -1,17 +1,18 @@
 package com.genc.healthinsurance.claim.service;
  
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
  
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+ 
+import com.genc.healthinsurance.auth.entity.User;
 import com.genc.healthinsurance.claim.entity.Claim;
 import com.genc.healthinsurance.claim.entity.ClaimStatus;
 import com.genc.healthinsurance.claim.repository.ClaimRepository;
-import com.genc.healthinsurance.policy.repository.PolicyRepository;
 import com.genc.healthinsurance.policy.entity.Policy;
-import com.genc.healthinsurance.auth.entity.User;
+import com.genc.healthinsurance.policy.repository.PolicyRepository;
 import com.genc.healthinsurance.auth.repository.UserRepository;
  
 @Service
@@ -26,29 +27,37 @@ public class ClaimService {
     @Autowired
     private UserRepository userRepository;
  
-    // Submit a new claim
-    public Claim submitClaim(Claim claimData) {
-        Policy policy = policyRepository.findById(claimData.getPolicy().getPolicyId())
+    // ---------------- Submit claim by policyholder ----------------
+    public Claim submitClaim(Claim claim) {
+        // Fetch policy from DB
+        Policy policy = policyRepository.findById(claim.getPolicy().getPolicyId())
                 .orElseThrow(() -> new RuntimeException("Policy not found"));
-        claimData.setPolicy(policy);
-        claimData.setClaimDate(LocalDate.now());
-        claimData.setClaimStatus(ClaimStatus.PENDING);
  
-        if (claimData.getAdjuster() != null) {
-            User adjuster = userRepository.findById(claimData.getAdjuster().getUserId())
-                    .orElseThrow(() -> new RuntimeException("Adjuster not found"));
-            claimData.setAdjuster(adjuster);
-        }
+        claim.setPolicy(policy);
+        claim.setClaimDate(LocalDate.now());
+        claim.setClaimStatus(ClaimStatus.PENDING);
  
-        return claimRepository.save(claimData);
+        return claimRepository.save(claim);
     }
  
-    // Get single claim
+    // ---------------- Submit claim manually by agent ----------------
+    public Claim submitClaimByAgent(Claim claim) {
+        // Agent manually provides all fields
+        Policy policy = policyRepository.findById(claim.getPolicy().getPolicyId())
+                .orElseThrow(() -> new RuntimeException("Policy not found"));
+        claim.setPolicy(policy);
+        claim.setClaimDate(LocalDate.now());
+        claim.setClaimStatus(ClaimStatus.PENDING);
+claim.setAdjuster(null); 
+        return claimRepository.save(claim);
+    }
+ 
+    // ---------------- Get claim details by claimId ----------------
     public Optional<Claim> getClaimDetails(Integer claimId) {
         return claimRepository.findById(claimId);
     }
  
-    // Update claim status
+    // ---------------- Update claim status ----------------
     public Claim updateClaimStatus(Integer claimId, ClaimStatus status) {
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new RuntimeException("Claim not found"));
@@ -56,15 +65,42 @@ public class ClaimService {
         return claimRepository.save(claim);
     }
  
-    // Get all claims by policy
+    // ---------------- Get all claims by policy ----------------
     public List<Claim> getAllClaimsByPolicy(Integer policyId) {
         Policy policy = policyRepository.findById(policyId)
                 .orElseThrow(() -> new RuntimeException("Policy not found"));
         return claimRepository.findByPolicy(policy);
     }
-    //get all claims by uid
-    public List<Claim> getClaimsByUserId(Integer userId){
-    	return claimRepository.findByPolicy_PolicyHolder_UserId(userId);
+ 
+    // ---------------- Get claims by policyholder userId ----------------
+    public List<Claim> getClaimsByUserId(Integer userId) {
+        return claimRepository.findByPolicy_PolicyHolder_UserId(userId);
+    }
+ 
+    // ---------------- Get claims submitted by agent (adjusterId) ----------------
+    public List<Claim> getClaimsByAdjuster(Integer adjusterId) {
+        User adjuster = userRepository.findById(adjusterId)
+                .orElseThrow(() -> new RuntimeException("Adjuster not found"));
+        return claimRepository.findByAdjuster(adjuster);
+    }
+    public Claim assignAdjuster(Integer claimId, Integer adjusterId) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new RuntimeException("Claim not found"));
+        User adjuster = userRepository.findById(adjusterId)
+                .orElseThrow(() -> new RuntimeException("Adjuster not found"));
+        claim.setAdjuster(adjuster);
+        return claimRepository.save(claim);
+    }
+    
+    public List<Claim> getAllClaims() {
+        return claimRepository.findAll();
+    }
+    public List<Policy> getAllPolicies() {
+        return policyRepository.findAll();
+    }
+ 
+    public List<Policy> getPoliciesByUser(User user) {
+        return policyRepository.findByPolicyHolder(user);
     }
 }
  

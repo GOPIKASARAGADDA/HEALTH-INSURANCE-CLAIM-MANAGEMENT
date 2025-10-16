@@ -38,22 +38,13 @@
         </li>
  
         <!-- Agent Links -->
-        <li class="nav-item" th:if="${session.userRole == 'AGENT'}">
-          <a class="nav-link" th:href="@{/policies/view}">
-            <i class="bi bi-file-person-fill me-1"></i> Policy Mgmt
-          </a>
-        </li>
+        
         <li class="nav-item" th:if="${session.userRole == 'AGENT'}">
           <a class="nav-link" th:href="@{/claims/submit}">
             <i class="bi bi-send-fill me-1"></i> Submit Claim
           </a>
         </li>
-        <li class="nav-item" th:if="${session.userRole == 'AGENT'}">
-          <a class="nav-link" th:href="@{/claims/myClaims}">
-            <i class="bi bi-clipboard-check-fill me-1"></i> View Claims
-          </a>
-        </li>
- 
+        
         <!-- Claim Adjuster Links -->
         <li class="nav-item" th:if="${session.userRole == 'CLAIM_ADJUSTER'}">
           <a class="nav-link" th:href="@{/claims/review}">
@@ -72,11 +63,11 @@
             <i class="bi bi-check2-square me-1"></i> Finalize Claims
           </a>
         </li>
-        <li class="nav-item" th:if="${session.userRole == 'ADMIN'}">
+     <!--   <li class="nav-item" th:if="${session.userRole == 'ADMIN'}">
           <a class="nav-link" th:href="@{/users}">
             <i class="bi bi-people-fill me-1"></i> Manage Users
           </a>
-        </li>
+        </li>-->
  
         <!-- Support (all logged-in users) -->
         <li class="nav-item" th:if="${session.userRole != null}">

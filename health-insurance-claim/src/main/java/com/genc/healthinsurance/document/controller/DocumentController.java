@@ -66,11 +66,20 @@ public class DocumentController {
     // Delete Document
     // ----------------------------
     @PostMapping("/delete/{documentId}")
-    public String deleteDocument(@PathVariable Long documentId) {
+    public String deleteDocument(@PathVariable Long documentId,HttpSession session) {
+    	String role=(String) session.getAttribute("userRole");
+    	if(!"ADMIN".equalsIgnoreCase(role) && !"POLICYHOLDER".equalsIgnoreCase(role)) {
+    		return "redirect:/home";
+    	}
         Document doc = documentService.getDocumentById(documentId);
         Integer claimId = doc.getClaim().getClaimId();
         documentService.deleteDocument(documentId);
+        
+        if("ADMIN".equalsIgnoreCase(role)) {
+        	return "redirect:/claims/review";
+        }else {
         return "redirect:/claims/" + claimId;
+    }
     }
 }
  
