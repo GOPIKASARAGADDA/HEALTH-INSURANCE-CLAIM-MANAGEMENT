@@ -32,7 +32,7 @@
                 <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
  
                 <!-- Login Form -->
-                <form th:action="@{/login}" method="post">
+                <form th:action="@{/auth/login}" method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label fw-semibold">Username</label>
                         <input type="text" class="form-control" id="username" name="username" required>
@@ -50,7 +50,7 @@
                     </div>
  
                     <div class="text-center mt-3">
-                        <a th:href="@{/register}" class="text-primary">Don't have an account? Register here.</a>
+                        <a th:href="@{/auth/register}" class="text-primary">Don't have an account? Register here.</a>
                     </div>
                 </form>
             </div>

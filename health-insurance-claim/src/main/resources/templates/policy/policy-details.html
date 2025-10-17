@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Policy Details</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+	    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"></head>
+		<link rel="stylesheet" th:href="@{/assets/css/style.css}">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; }
+        main { flex: 1; }
+        h3 { text-align: center; margin-bottom: 2rem; }
+        .policy-detail { margin-bottom: 1rem; }
+        .policy-detail span { font-weight: 600; }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <div class="container">
+        <h3>Policy Details</h3>
+        <div class="policy-detail">
+            <span>Policy Number:</span> <span th:text="${policy.policyNumber}"></span>
+        </div>
+        <div class="policy-detail">
+            <span>Coverage Amount:</span> <span th:text="'₹ ' + ${policy.coverageAmount}"></span>
+        </div>
+        <div class="policy-detail">
+            <span>Status:</span> <span th:text="${policy.policyStatus}"></span>
+        </div>
+        <div class="policy-detail">
+            <span>Created Date:</span> <span th:text="${policy.createDate}"></span>
+        </div>
+
+
+		
+        <div class="mt-4 text-center">
+            <a th:href="@{/policies/my-policies}" class="btn btn-primary">Back to My Policies</a>
+        </div>
+    </div>
+</main>
+<!-- Footer -->
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script th:src="@{/assets/js/script.js}"></script>
+</body>
+</html>
+
+ 

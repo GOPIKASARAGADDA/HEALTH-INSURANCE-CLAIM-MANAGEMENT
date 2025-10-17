@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
     <fullyQualifiedTypeName name="jakarta.persistence.Table"/>
-    <fullyQualifiedTypeName name="jakarta.persistence.EnumType"/>
     <fullyQualifiedTypeName name="jakarta.persistence.Id"/>
-    <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.entity.Role"/>
-    <fullyQualifiedTypeName name="java.util.Optional"/>
     <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.JpaRepository"/>
     <fullyQualifiedTypeName name="java.math.BigInteger"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RestController"/>
@@ -18,17 +15,28 @@
     <fullyQualifiedTypeName name="com.genc.healthinsurance.document.controller.DocumentController"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PathVariable"/>
-    <fullyQualifiedTypeName name="com.genc.healthinsurance.policy.entity.Policy"/>
-    <fullyQualifiedTypeName name="org.springframework.ui.Model"/>
     <fullyQualifiedTypeName name="com.genc.healthinsurance.document.entity.Document"/>
     <fullyQualifiedTypeName name="com.mysql.cj.util.StringUtils"/>
     <fullyQualifiedTypeName name="org.springframework.util.StringUtils"/>
-    <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.repository.UserRepository"/>
-    <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.entity.User"/>
-    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
-    <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.service.UserService"/>
     <fullyQualifiedTypeName name="org.springframework.data.repository.query.Param"/>
     <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.Query"/>
     <fullyQualifiedTypeName name="org.springframework.stereotype.Service"/>
+    <fullyQualifiedTypeName name="java.nio.file.Path"/>
+    <fullyQualifiedTypeName name="java.nio.file.Paths"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.document.entity.DocumentType"/>
+    <fullyQualifiedTypeName name="java.util.Optional"/>
+    <fullyQualifiedTypeName name="org.springframework.ui.Model"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.service.UserService"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.entity.Role"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.auth.entity.User"/>
+    <fullyQualifiedTypeName name="jakarta.servlet.http.HttpSession"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+    <fullyQualifiedTypeName name="java.security.PolicySpi"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.policy.service.PolicyService"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.policy.entity.Policy"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Enumerated"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.EnumType"/>
+    <fullyQualifiedTypeName name="com.genc.healthinsurance.policy.entity.PolicyStatus"/>
 </qualifiedTypeNameHistroy>

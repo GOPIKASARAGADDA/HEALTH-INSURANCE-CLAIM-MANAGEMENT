@@ -13,6 +13,8 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+			font-family: 'Poppins',sans-serif;
+
         }
         main {
             flex: 1;
@@ -83,31 +85,12 @@
                 <dd class="col-sm-8" th:text="${claim.claimDate}"></dd>
  
 				<dt class="col-sm-4">Claim Status:</dt>
-				<dd class="col-sm-8">
-					<span class="badge"
-					      th:classappend="
-					        ${claim.claimStatus == null} ? ' bg-secondary' :
-					        (${claim.claimStatus.name() == 'PENDING'} ? ' bg-warning text-dark' : '')"
-					      th:if="${claim.claimStatus != null and claim.claimStatus.name() == 'PENDING'}"
-					      th:text="'PENDING'">
-					</span>
-					 
-					<span class="badge bg-success"
-					      th:if="${claim.claimStatus != null and claim.claimStatus.name() == 'APPROVED'}"
-					      th:text="'APPROVED'">
-					</span>
-					 
-					<span class="badge bg-danger"
-					      th:if="${claim.claimStatus != null and claim.claimStatus.name() == 'REJECTED'}"
-					      th:text="'REJECTED'">
-					</span>
-					 
-					<span class="badge bg-secondary"
-					      th:if="${claim.claimStatus == null}"
-					      th:text="'PENDING'">
-					</span>
-					 
-				</dd>
+				          <dd class="col-sm-8">
+				            <span th:if="${claim.claimStatus == null}" class="badge bg-secondary">Pending</span>
+				            <span th:if="${claim.claimStatus?.name() == 'PENDING'}" class="badge bg-warning text-dark">Pending</span>
+				            <span th:if="${claim.claimStatus?.name() == 'APPROVED'}" class="badge bg-success">Approved</span>
+				            <span th:if="${claim.claimStatus?.name() == 'REJECTED'}" class="badge bg-danger">Rejected</span>
+				          </dd>
  
                 <dt class="col-sm-4">Adjuster:</dt>
                 <dd class="col-sm-8" th:text="${claim.adjuster != null ? claim.adjuster.username : 'Not Assigned'}"></dd>
@@ -140,7 +123,7 @@
 			    </a>
 			 
 			    <!-- If Agent, show info text instead -->
-			    <p th:if="${userRole == 'AGENT' and userRole == 'CLAIM_ADJUSTER'}" class="text-muted mt-2">
+			    <p th:if="${userRole == 'AGENT' or userRole == 'CLAIM_ADJUSTER'}" class="text-muted mt-2">
 			        Cannot upload documents for policyholders.
 			    </p>
 			</div>

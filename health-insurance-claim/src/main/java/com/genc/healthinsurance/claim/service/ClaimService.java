@@ -28,11 +28,12 @@ public class ClaimService {
     private UserRepository userRepository;
  
     // ---------------- Submit claim by policyholder ----------------
-    public Claim submitClaim(Claim claim) {
+    public Claim submitClaim(Claim claim,Integer userId) {
         // Fetch policy from DB
+    	User currentUser=userRepository.findByUserId(userId);
         Policy policy = policyRepository.findById(claim.getPolicy().getPolicyId())
                 .orElseThrow(() -> new RuntimeException("Policy not found"));
- 
+        claim.setUser(currentUser);
         claim.setPolicy(policy);
         claim.setClaimDate(LocalDate.now());
         claim.setClaimStatus(ClaimStatus.PENDING);
@@ -45,10 +46,14 @@ public class ClaimService {
         // Agent manually provides all fields
         Policy policy = policyRepository.findById(claim.getPolicy().getPolicyId())
                 .orElseThrow(() -> new RuntimeException("Policy not found"));
+        
         claim.setPolicy(policy);
         claim.setClaimDate(LocalDate.now());
         claim.setClaimStatus(ClaimStatus.PENDING);
 claim.setAdjuster(null); 
+if(claim.getUser()==null) {
+	throw new RuntimeException("userid must be specified for the claim");
+}
         return claimRepository.save(claim);
     }
  
@@ -74,15 +79,19 @@ claim.setAdjuster(null);
  
     // ---------------- Get claims by policyholder userId ----------------
     public List<Claim> getClaimsByUserId(Integer userId) {
-        return claimRepository.findByPolicy_PolicyHolder_UserId(userId);
+    	User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+  return claimRepository.findByUser(user);
     }
  
-    // ---------------- Get claims submitted by agent (adjusterId) ----------------
+    // ---------------- Get claims submitted by(adjusterId) ----------------
     public List<Claim> getClaimsByAdjuster(Integer adjusterId) {
         User adjuster = userRepository.findById(adjusterId)
                 .orElseThrow(() -> new RuntimeException("Adjuster not found"));
         return claimRepository.findByAdjuster(adjuster);
     }
+    
+    
     public Claim assignAdjuster(Integer claimId, Integer adjusterId) {
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new RuntimeException("Claim not found"));
@@ -100,7 +109,7 @@ claim.setAdjuster(null);
     }
  
     public List<Policy> getPoliciesByUser(User user) {
-        return policyRepository.findByPolicyHolder(user);
+        return policyRepository.findByEnrolledUsersContaining(user);
     }
 }
  

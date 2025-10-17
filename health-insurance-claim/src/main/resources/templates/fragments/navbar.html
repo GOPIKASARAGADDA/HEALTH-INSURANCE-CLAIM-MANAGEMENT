@@ -2,6 +2,7 @@
   <div class="container-fluid">
  
     <!-- Logo -->
+	<img th:src="@{/assets/images/logo.png}" style="height: 50px;width: auto;">
     <a class="navbar-brand" th:href="@{/home}">InsuraFlow</a>
  
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -21,8 +22,13 @@
         </li>
  
         <!-- Policyholder Links -->
+		<li class="nav-item" th:if="${session.userRole == 'POLICYHOLDER'}">
+		         <a class="nav-link" th:href="@{/policies/view}">
+		           <i class="bi bi-file-earmark-medical-fill me-1"></i> Available Policies
+		         </a>
+		       </li>
         <li class="nav-item" th:if="${session.userRole == 'POLICYHOLDER'}">
-          <a class="nav-link" th:href="@{/policies/view}">
+          <a class="nav-link" th:href="@{/policies/my-policies}">
             <i class="bi bi-file-earmark-medical-fill me-1"></i> My Policies
           </a>
         </li>
@@ -36,6 +42,11 @@
             <i class="bi bi-clipboard-check-fill me-1"></i> My Claims
           </a>
         </li>
+		<li class="nav-item" th:if="${session.userRole == 'POLICYHOLDER'}">
+		  <a class="nav-link" th:href="@{/support}">
+		    <i class="bi bi-headset me-1"></i> Support
+		  </a>
+		</li>
  
         <!-- Agent Links -->
         
@@ -53,6 +64,11 @@
         </li>
  
         <!-- Admin Links -->
+		<li class="nav-item" th:if="${session.userRole == 'ADMIN'}">
+		         <a class="nav-link" th:href="@{/policies/create}">
+		           <i class="bi bi-gear-fill me-1"></i> Create Policies
+		         </a>
+		       </li>
         <li class="nav-item" th:if="${session.userRole == 'ADMIN'}">
           <a class="nav-link" th:href="@{/policies/manage}">
             <i class="bi bi-gear-fill me-1"></i> Manage Policies
@@ -63,18 +79,13 @@
             <i class="bi bi-check2-square me-1"></i> Finalize Claims
           </a>
         </li>
-     <!--   <li class="nav-item" th:if="${session.userRole == 'ADMIN'}">
-          <a class="nav-link" th:href="@{/users}">
-            <i class="bi bi-people-fill me-1"></i> Manage Users
-          </a>
-        </li>-->
+		<li class="nav-item" th:if="${session.userRole == 'AGENT'||session.userRole == 'CLAIM_ADJUSTER'||session.userRole == 'ADMIN' }">
+				  <a class="nav-link" th:href="@{/support/admin}">
+				    <i class="bi bi-headset me-1"></i> Support
+				  </a>
+				</li>
  
-        <!-- Support (all logged-in users) -->
-        <li class="nav-item" th:if="${session.userRole != null}">
-          <a class="nav-link" th:href="@{/support}">
-            <i class="bi bi-headset me-1"></i> Support
-          </a>
-        </li>
+
  
       </ul>
  
@@ -89,13 +100,13 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li>
-              <a class="dropdown-item" th:href="@{/profile}">
+              <a class="dropdown-item" th:href="@{/auth/profile}">
                 <i class="bi bi-person-badge me-1"></i> View Profile
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item" th:href="@{/logout}">
+              <a class="dropdown-item" th:href="@{/auth/logout}">
                 <i class="bi bi-box-arrow-right me-1"></i> Logout
               </a>
             </li>
@@ -104,12 +115,12 @@
  
         <!-- Login/Register -->
         <li class="nav-item" th:if="${session.userRole == null}">
-          <a class="btn btn-primary btn-auth" th:href="@{/login}">
+          <a class="btn btn-primary btn-auth" th:href="@{/auth/login}">
             <i class="bi bi-box-arrow-in-right me-1"></i> Login
           </a>
         </li>
         <li class="nav-item" th:if="${session.userRole == null}">
-          <a class="btn btn-outline-light btn-auth" th:href="@{/register}">
+          <a class="btn btn-outline-light btn-auth" th:href="@{/auth/register}">
             <i class="bi bi-person-plus-fill me-1"></i> Register
           </a>
         </li>

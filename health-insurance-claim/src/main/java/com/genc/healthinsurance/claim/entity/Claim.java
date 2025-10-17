@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
  
 import jakarta.persistence.*;
- 
+import jakarta.validation.constraints.NotNull;
+
 import com.genc.healthinsurance.auth.entity.User;
 import com.genc.healthinsurance.policy.entity.Policy;
 import com.genc.healthinsurance.document.entity.Document;
@@ -17,10 +18,17 @@ public class Claim {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer claimId;
  
+    @NotNull(message="Policy must be selected")
+    
     @ManyToOne
     @JoinColumn(name = "policyId", nullable = false)
     private Policy policy;
+    
+    @ManyToOne
+    @JoinColumn(name="userId")
+    private User user;
  
+    @NotNull(message="claim amount is required")
     @Column(nullable = false)
     private Double claimAmount;
  
@@ -28,22 +36,35 @@ public class Claim {
     private LocalDate claimDate;
  
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ClaimStatus claimStatus;
  
     @ManyToOne
     @JoinColumn(name = "adjusterId")
     private User adjuster; // Nullable until assigned
+    
  
     // --------- NEW: One-to-Many mapping to Documents ---------
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Document> documents;
  
     // --------- Getters & Setters ---------
+    
+    
+    
     public Integer getClaimId() {
         return claimId;
     }
  
-    public void setClaimId(Integer claimId) {
+    public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setClaimId(Integer claimId) {
         this.claimId = claimId;
     }
  

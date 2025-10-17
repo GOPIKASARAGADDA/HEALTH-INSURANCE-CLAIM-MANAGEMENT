@@ -60,7 +60,14 @@
  
             <hr class="mt-4">
             <div class="d-flex justify-content-between">
-                <a th:href="@{/claims/my-claims}" class="btn btn-secondary">Back to My Claims</a>
+				<div th:if="${userRole == 'POLICYHOLDER'}">
+					<a th:href="@{/claims/my-claims}" class="btn btn-secondary">Back to My Claims</a>
+				</div>
+				<div th:if="${userRole == 'ADMIN' or userRole=='CLAIM_ADJUSTER'}">
+					<a th:href="@{/claims/review}" class="btn btn-secondary">Back to My Claims</a>
+
+				</div>
+                
 				<div th:if="${userRole == 'POLICYHOLDER' or userRole == 'ADMIN'}">
 				    <form th:action="@{/documents/delete/{id}(id=${document.documentId})}" method="post"
 				          onsubmit="return confirm('Are you sure you want to delete this document?');">
