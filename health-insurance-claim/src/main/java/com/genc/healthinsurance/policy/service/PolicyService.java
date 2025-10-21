@@ -27,8 +27,10 @@ public class PolicyService {
  
     public Policy createPolicy(Policy policyData) {
         policyData.setCreateDate(LocalDate.now());
-        policyData.setPolicyStatus(PolicyStatus.ACTIVE);
-        return policyRepository.save(policyData);
+    	if(policyData.getPolicyStatus()==null) { //if admin do not assign any status
+            policyData.setPolicyStatus(PolicyStatus.ACTIVE);
+        	}       
+    	return policyRepository.save(policyData);
     }
  
     public Policy updatePolicy(Integer policyId, Policy updatedData) {

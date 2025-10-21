@@ -37,7 +37,7 @@ public class PolicyController {
     // Handle Create Policy form submission
     @PostMapping("/create")
     public String createPolicySubmit(@ModelAttribute Policy policy) {
-        policy.setPolicyStatus(PolicyStatus.ACTIVE);
+
         policyService.createPolicy(policy); // Admin creates policy without assigning user
         return "redirect:/policies/manage";
     }

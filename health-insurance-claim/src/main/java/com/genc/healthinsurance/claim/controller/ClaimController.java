@@ -1,9 +1,7 @@
 package com.genc.healthinsurance.claim.controller;
-
-import java.time.LocalDate;
+ 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,205 +19,155 @@ import com.genc.healthinsurance.auth.service.AuthService;
 import com.genc.healthinsurance.claim.entity.Claim;
 import com.genc.healthinsurance.claim.entity.ClaimStatus;
 import com.genc.healthinsurance.claim.service.ClaimService;
-import com.genc.healthinsurance.policy.entity.Policy;
-import com.genc.healthinsurance.policy.entity.PolicyStatus;
 import com.genc.healthinsurance.policy.service.PolicyService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-
+ 
 @Controller
 @RequestMapping("/claims")
 public class ClaimController {
-
-	@Autowired
-	private ClaimService claimService;
-
-	@Autowired
-	private AuthService userService;
-
-	@Autowired
-	private PolicyService policyService;
-
-	// ---------------- Step 1: Show submit claim form ----------------
-	@GetMapping("/submit")
-	public String showSubmitClaimForm(Model model, HttpSession session) {
-		Integer userId = (Integer) session.getAttribute("loggedInUserId");
-		String userRole = (String) session.getAttribute("userRole");
-		if (userId == null) {
-			return "redirect:/home";
-		}
-
-		model.addAttribute("userRole", userRole);
-		model.addAttribute("claim", new Claim());
-
-		// For both agent and policyholder, show available policies
-		User loggedInUser = (User) session.getAttribute("loggedInUser");
-
-		if ("AGENT".equalsIgnoreCase(userRole)) {
-			// Agent: get all policies
-			model.addAttribute("policies", claimService.getAllPolicies());
-		} else if (loggedInUser != null) {
-			model.addAttribute("policies", claimService.getPoliciesByUser(loggedInUser));
-
-		}
-
-		return "claims/submit-claim";
-	}
-
-	// ---------------- Step 2: Submit claim ----------------
-	@PostMapping("/submit")
-	public String submitClaim(@Valid @ModelAttribute Claim claim, BindingResult result, HttpSession session,
-			Model model) {
-
-		String userRole = (String) session.getAttribute("userRole");
-		Integer userId = (Integer) session.getAttribute("loggedInUserId");
-
-		// Fetch the policy using Optional
-		Optional<Policy> optionalPolicy = policyService.getPolicyDetails(claim.getPolicy().getPolicyId());
-
-		if (optionalPolicy.isEmpty()) {
-			result.rejectValue("policy", "error.claim", "Selected policy does not exist");
-		} else {
-			Policy policy = optionalPolicy.get();
-
-			// Check if policy is active
-			if (policy.getPolicyStatus() != PolicyStatus.ACTIVE) {
-				result.rejectValue("policy", "error.claim", "Cannot submit claim: Policy is not active");
-			}
-
-			// Check claim amount vs coverage
-			if (claim.getClaimAmount() != null && claim.getClaimAmount() > policy.getCoverageAmount()) {
-				result.rejectValue("claimAmount", "error.claim", "Claim amount exceeds policy coverage");
-			}
-
-			// Set the policy object in claim
-			claim.setPolicy(policy);
-		}
-
-		// If there are validation errors, return to the form with errors
-		if (result.hasErrors()) {
-			model.addAttribute("policies", policyService.getPoliciesByUser(userId));
-			return "claims/submit-claim";
-		}
-
-		// Set claim defaults
-		claim.setClaimDate(LocalDate.now());
-		claim.setClaimStatus(ClaimStatus.PENDING);
-
-		if ("AGENT".equalsIgnoreCase(userRole)) {
-			claimService.submitClaimByAgent(claim);
-			return "redirect:/claims/" + claim.getClaimId();
-		}
-
-		claimService.submitClaim(claim,userId);
-		return "redirect:/claims/my-claims";
-
-	}
-
-	// ---------------- Step 3: View my claims ----------------
-	@GetMapping("/my-claims")
-	public String viewMyClaims(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("loggedInUserId");
-		if (userId == null) {
-			return "redirect:/home";
-		}
-
-		String userRole = (String) session.getAttribute("userRole");
-
-		// Claims submitted by this policyholder
-
-		model.addAttribute("claims", claimService.getClaimsByUserId(userId));
-		model.addAttribute("userRole", userRole);
-
-		return "claims/my-claims";
-	}
-
-	// ---------------- Step 4: View claim details ----------------
-	@GetMapping("/{claimId}")
-	public String getClaimDetails(@PathVariable Integer claimId, Model model, HttpSession session) {
-		Optional<Claim> claimOpt = claimService.getClaimDetails(claimId);
-
-		if (claimOpt.isPresent()) {
-			model.addAttribute("claim", claimOpt.get());
-			String userRole = (String) session.getAttribute("userRole");
-			model.addAttribute("userRole", userRole);
-			return "claims/view-claim";
-		} else {
-			model.addAttribute("error", "Claim not found");
-			return "error";
-		}
-	}
-
-	// ---------------- Step 5: Update claim status ----------------
-	@PostMapping("/{claimId}/status")
-	public String updateClaimStatus(@PathVariable Integer claimId, ClaimStatus status, HttpSession session) {
-		claimService.updateClaimStatus(claimId, status);
-		String role = (String) session.getAttribute("userRole");
-		if ("CLAIM_ADJUSTER".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
-			return "redirect:/claims/review"; // Adjuster review page
-		}
-
-		return "redirect:/claims/my-claims"; // Policyholder
-
-	}
-
-	// ---------------- Review claims (Admin & Adjuster) ----------------
-	@GetMapping("/review")
-	public String reviewClaims(HttpSession session, Model model) {
-		String userRole = (String) session.getAttribute("userRole");
-		Integer loggedInUserId = (Integer) session.getAttribute("loggedInUserId");
-
-		List<Claim> claims = switch (userRole.toUpperCase()) {
-		case "ADMIN" -> claimService.getAllClaims();
-		case "CLAIM_ADJUSTER" -> claimService.getClaimsByAdjuster(loggedInUserId);
-		default -> null;
-		};
-
-		if (claims == null)
-			return "redirect:/claims/my-claims";
-
-		// Add common attributes
-		model.addAttribute("claims", claims);
-		model.addAttribute("userRole", userRole);
-
-		// Fetch available adjusters for admin to assign
-		if ("ADMIN".equalsIgnoreCase(userRole)) {
-			model.addAttribute("adjusters", userService.getAllAdjusters());
-		}
-
-		return "claims/review-claims";
-	}
-
-	@PostMapping("/assign")
-	public String assignAdjuster(Integer claimId, Integer adjusterId) {
-		claimService.assignAdjuster(claimId, adjusterId);
-		return "redirect:/claims/review";
-	}
-
-	// ---------------- Step 6: View all claims by policy ----------------
-
-	@GetMapping("/policy")
-	public String viewClaimsByPolicyholder(@RequestParam(value = "policyId", required = false) Integer policyId,
-			HttpSession session, Model model) {
-		// Get logged-in user info
-		Integer userId = (Integer) session.getAttribute("loggedInUserId");
-		model.addAttribute("userRole", "POLICYHOLDER");
-
-		// Fetch all claims for this user
-		List<Claim> claims = claimService.getClaimsByUserId(userId);
-
-		// Filter by policy if policyId is provided
-		if (policyId != null) {
-			claims = claims.stream().filter(c -> c.getPolicy() != null && policyId.equals(c.getPolicy().getPolicyId())) // primitive
-																														// comparison
-					.collect(Collectors.toList());
-		}
-
-		model.addAttribute("claims", claims);
-		model.addAttribute("selectedPolicyId", policyId);
-
-		return "claims/my-claims";
-	}
-
+ 
+    @Autowired
+    private ClaimService claimService;
+ 
+    @Autowired
+    private AuthService userService;
+ 
+    @Autowired
+    private PolicyService policyService;
+ 
+    // ---------------- Show submit claim form ----------------
+    @GetMapping("/submit")
+    public String showSubmitClaimForm(Model model, HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("loggedInUserId");
+        String userRole = (String) session.getAttribute("userRole");
+        if (userId == null) return "redirect:/home";
+ 
+        model.addAttribute("userRole", userRole);
+        model.addAttribute("claim", new Claim());
+ 
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if ("AGENT".equalsIgnoreCase(userRole)) {
+            model.addAttribute("policies", policyService.getAllPolicies());
+        } else if (loggedInUser != null) {
+            model.addAttribute("policies", policyService.getPoliciesByUser(userId));
+        }
+ 
+        return "claims/submit-claim";
+    }
+ 
+    // ---------------- Submit claim ----------------
+    @PostMapping("/submit")
+    public String submitClaim(@Valid @ModelAttribute Claim claim, BindingResult result, HttpSession session, Model model) {
+        Integer userId = (Integer) session.getAttribute("loggedInUserId");
+        String userRole = (String) session.getAttribute("userRole");
+        if (userId == null) return "redirect:/home";
+     
+        try {
+            Claim savedClaim;
+            if ("AGENT".equalsIgnoreCase(userRole)) {
+                savedClaim = claimService.submitClaimByAgent(claim);
+                return "redirect:/claims/" + savedClaim.getClaimId();
+            } else {
+                savedClaim = claimService.processClaimSubmission(claim, userId, userRole);
+                return "redirect:/claims/my-claims";
+            }
+        } catch (RuntimeException ex) {
+            result.reject("error.claim", ex.getMessage());
+     
+            // Re-populate policies for the form based on role
+            model.addAttribute("userRole", userRole);
+            if ("AGENT".equalsIgnoreCase(userRole)) {
+                model.addAttribute("policies", policyService.getAllPolicies());
+            } else {
+                model.addAttribute("policies", policyService.getPoliciesByUser(userId));
+            }
+     
+            return "claims/submit-claim";
+        }
+    }
+ 
+    // ---------------- View my claims ----------------
+    @GetMapping("/my-claims")
+    public String viewMyClaims(HttpSession session, Model model) {
+        Integer userId = (Integer) session.getAttribute("loggedInUserId");
+        if (userId == null) return "redirect:/home";
+ 
+        String userRole = (String) session.getAttribute("userRole");
+        model.addAttribute("claims", claimService.getClaimsByUserId(userId));
+        model.addAttribute("userRole", userRole);
+        return "claims/my-claims";
+    }
+ 
+    // ---------------- View claim details ----------------
+    @GetMapping("/{claimId}")
+    public String getClaimDetails(@PathVariable Integer claimId, Model model, HttpSession session) {
+        Optional<Claim> claimOpt = claimService.getClaimDetails(claimId);
+        if (claimOpt.isPresent()) {
+            model.addAttribute("claim", claimOpt.get());
+            model.addAttribute("userRole", session.getAttribute("userRole"));
+            return "claims/view-claim";
+        } else {
+            model.addAttribute("error", "Claim not found");
+            return "error";
+        }
+    }
+ 
+    // ---------------- Update claim status ----------------
+    @PostMapping("/{claimId}/status")
+    public String updateClaimStatus(@PathVariable Integer claimId, ClaimStatus status, HttpSession session) {
+        claimService.updateClaimStatus(claimId, status);
+        String role = (String) session.getAttribute("userRole");
+        if ("CLAIM_ADJUSTER".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
+            return "redirect:/claims/review";
+        }
+        return "redirect:/claims/my-claims";
+    }
+ 
+    // ---------------- Review claims (Admin & Adjuster) ----------------
+    @GetMapping("/review")
+    public String reviewClaims(HttpSession session, Model model) {
+        String userRole = (String) session.getAttribute("userRole");
+        Integer loggedInUserId = (Integer) session.getAttribute("loggedInUserId");
+ 
+        List<Claim> claims = switch (userRole.toUpperCase()) {
+            case "ADMIN" -> claimService.getAllClaims();
+            case "CLAIM_ADJUSTER" -> claimService.getClaimsByAdjuster(loggedInUserId);
+            default -> null;
+        };
+ 
+        if (claims == null) return "redirect:/claims/my-claims";
+ 
+        model.addAttribute("claims", claims);
+        model.addAttribute("userRole", userRole);
+ 
+        if ("ADMIN".equalsIgnoreCase(userRole)) {
+            model.addAttribute("adjusters", userService.getAllAdjusters());
+        }
+ 
+        return "claims/review-claims";
+    }
+ 
+    // ---------------- Assign adjuster (Admin only) ----------------
+    @PostMapping("/assign")
+    public String assignAdjuster(@RequestParam Integer claimId, @RequestParam Integer adjusterId) {
+        claimService.assignAdjuster(claimId, adjusterId);
+        return "redirect:/claims/review";
+    }
+ 
+    // ---------------- View all claims for a policy (Policyholder) ----------------
+    @GetMapping("/policy")
+    public String viewClaimsByPolicyholder(@RequestParam(value = "policyId", required = false) Integer policyId,
+                                           HttpSession session, Model model) {
+        Integer userId = (Integer) session.getAttribute("loggedInUserId");
+        model.addAttribute("userRole", "POLICYHOLDER");
+ 
+        List<Claim> claims = claimService.getClaimsForUserByPolicy(userId, policyId);
+ 
+        model.addAttribute("claims", claims);
+        model.addAttribute("selectedPolicyId", policyId);
+        return "claims/my-claims";
+    }
 }
+ 

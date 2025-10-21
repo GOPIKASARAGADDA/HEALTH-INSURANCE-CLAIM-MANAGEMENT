@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
  
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 import com.genc.healthinsurance.auth.entity.User;
@@ -29,6 +30,7 @@ public class Claim {
     private User user;
  
     @NotNull(message="claim amount is required")
+    @Min(value = 1,message="claim amount must be positive")
     @Column(nullable = false)
     private Double claimAmount;
  

@@ -5,7 +5,7 @@ import com.genc.healthinsurance.auth.entity.User;
 import jakarta.persistence.*;
  
 @Entity
-@Table(name = "SupportTicket")
+@Table(name = "Support")
 public class SupportTicket {
  
     @Id
