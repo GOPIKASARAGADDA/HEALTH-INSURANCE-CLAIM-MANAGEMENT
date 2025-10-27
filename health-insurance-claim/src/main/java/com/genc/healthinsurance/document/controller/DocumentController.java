@@ -1,5 +1,7 @@
 package com.genc.healthinsurance.document.controller;
  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +22,16 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/documents")
 public class DocumentController {
- 
+	private static final Logger logger=LoggerFactory.getLogger(DocumentController.class);
+
     @Autowired
     private DocumentService documentService;
  
     // ---------------- Upload Document Form ----------------
     @GetMapping("/upload-documents/{claimId}")
     public String showUploadForm(@PathVariable Integer claimId, Model model) {
+    	logger.info("opening upload document for claim {}",claimId );
+
     	Document document=new Document();
     	Claim claim=new Claim();
     	claim.setClaimId(claimId);
@@ -41,7 +46,9 @@ public class DocumentController {
     public String uploadDocument(@ModelAttribute Document document,
                                  @RequestParam("file") MultipartFile file,
                                  Model model) {
-        documentService.uploadDocument(document, file);
+    	logger.info("document uploading for claim {}",document.getClaim().getClaimId() );
+
+    	documentService.uploadDocument(document, file);
         // Redirect to view claim page after upload
         return "redirect:/claims/" + document.getClaim().getClaimId();
     }
@@ -53,6 +60,8 @@ public class DocumentController {
     // ----------------------------
     @GetMapping("/view/{documentId}")
     public String getDocumentDetails(@PathVariable Long documentId, Model model, HttpSession session) {
+    	logger.info("fetching document details for docid {}",documentId );
+
         Document doc = documentService.getDocumentById(documentId);
         model.addAttribute("document", doc);
         
@@ -69,8 +78,11 @@ public class DocumentController {
     public String deleteDocument(@PathVariable Long documentId,HttpSession session) {
     	String role=(String) session.getAttribute("userRole");
     	if(!"ADMIN".equalsIgnoreCase(role) && !"POLICYHOLDER".equalsIgnoreCase(role)) {
+    		logger.warn("Unauthorized delete attempt");
     		return "redirect:/home";
     	}
+    	logger.info("delete document for docid {} requested",documentId );
+
         Document doc = documentService.getDocumentById(documentId);
         Integer claimId = doc.getClaim().getClaimId();
         documentService.deleteDocument(documentId);

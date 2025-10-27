@@ -46,16 +46,16 @@
  
            
 			<div th:if="${document.documentType.name() == 'PNG' or document.documentType.name() == 'JPG'}">
-			    <img th:src="${document.documentPath}" class="img-fluid rounded shadow-sm" style="max-height:400px;">
+			    <img th:src="@{${document.documentPath}}" class="img-fluid rounded shadow-sm" style="max-height:400px;">
 			</div>
 			 
 			<div th:if="${document.documentType.name() == 'PDF'}">
-			    <embed th:src="${document.documentPath}" type="application/pdf" width="100%" height="600px"/>
+			    <embed th:src="@{${document.documentPath}}" type="application/pdf" width="100%" height="600px"/>
 			</div>
 			 
 			<div th:if="${document.documentType.name() == 'DOC'}">
 			    <p class="text-muted">Preview not available for DOC files.</p>
-			    <a th:href="${document.documentPath}" class="btn btn-outline-primary" download>Download File</a>
+			    <a th:href="@{${document.documentPath}}" class="btn btn-outline-primary" download>Download File</a>
 			</div>
  
             <hr class="mt-4">

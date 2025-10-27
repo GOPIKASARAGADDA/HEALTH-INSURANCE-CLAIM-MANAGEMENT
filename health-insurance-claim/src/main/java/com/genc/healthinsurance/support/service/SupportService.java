@@ -3,6 +3,8 @@ package com.genc.healthinsurance.support.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,9 @@ import com.genc.healthinsurance.support.repository.SupportTicketRepository;
  
 @Service
 public class SupportService {
- 
+	private static final Logger logger=LoggerFactory.getLogger(SupportService.class);
+
+	
     @Autowired
     private SupportTicketRepository ticketRepository;
  
@@ -22,11 +26,14 @@ public class SupportService {
         ticket.setUser(user);
         ticket.setTicketStatus(TicketStatus.OPEN);
         ticket.setCreatedDate(LocalDate.now());
+        logger.info("ticket creation successful");
         return ticketRepository.save(ticket);
     }
  
     // ---------------- Get ticket details by ID ----------------
     public SupportTicket getTicketDetails(Integer ticketId) {
+        logger.info("ticket retrieved successful");
+
         return ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found with ID: " + ticketId));
     }
@@ -34,10 +41,12 @@ public class SupportService {
     // ---------------- Resolve a ticket ----------------
     public SupportTicket resolveTicket(Integer ticketId, User user) {
         if (user.getRole().name().equalsIgnoreCase("POLICYHOLDER")) {
+        	logger.warn("Unauthorized access by policyholder");
             throw new RuntimeException("Policyholders cannot resolve tickets.");
         }
         SupportTicket ticket = getTicketDetails(ticketId);
         ticket.setTicketStatus(TicketStatus.RESOLVED);
+        logger.info("ticket resolved");
         return ticketRepository.save(ticket);
     }
  

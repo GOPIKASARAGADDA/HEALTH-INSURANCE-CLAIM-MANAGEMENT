@@ -9,14 +9,24 @@
 		<link rel="stylesheet" th:href="@{/assets/css/style.css}">
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; }
-        main { flex: 1; }
+        main { display: flex; justify-content: center; align-items: center; min-height: 70vh; }
+
+		.form-card {
+		           background: #fff;
+		           padding: 2rem;
+		           border-radius: 10px;
+		           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+		           width: 100%;
+		           max-width: 500px;
+		       }
+
         h3 { text-align: center; margin-bottom: 2rem; }
     </style>
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <main>
-    <div class="container">
+    <div class="form-card">
         <h3>Create Policy</h3>
         <form th:action="@{/policies/create}" th:object="${policy}" method="post">
             <div class="mb-3">

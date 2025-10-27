@@ -3,6 +3,8 @@ package com.genc.healthinsurance.claim.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +29,9 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/claims")
 public class ClaimController {
- 
+	
+	private static final Logger logger=LoggerFactory.getLogger(ClaimController.class);
+	
     @Autowired
     private ClaimService claimService;
  
@@ -42,19 +46,23 @@ public class ClaimController {
     public String showSubmitClaimForm(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("loggedInUserId");
         String userRole = (String) session.getAttribute("userRole");
-        if (userId == null) return "redirect:/home";
- 
+        if (userId == null) {
+        	logger.warn("Unauthorized access attempt to claim submission page");
+        	return "redirect:/home";
+        }
+ logger.info("User{} with role {} is opening claim submission form",userId,userRole);
+        
         model.addAttribute("userRole", userRole);
         model.addAttribute("claim", new Claim());
  
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if ("AGENT".equalsIgnoreCase(userRole)) {
-            model.addAttribute("policies", policyService.getAllPolicies());
+            model.addAttribute("policies", policyService.getAllPolicies()); //oractivlater
         } else if (loggedInUser != null) {
             model.addAttribute("policies", policyService.getPoliciesByUser(userId));
         }
  
-        return "claims/submit-claim";
+        return "claims/submit-claim"; //view
     }
  
     // ---------------- Submit claim ----------------
@@ -62,20 +70,25 @@ public class ClaimController {
     public String submitClaim(@Valid @ModelAttribute Claim claim, BindingResult result, HttpSession session, Model model) {
         Integer userId = (Integer) session.getAttribute("loggedInUserId");
         String userRole = (String) session.getAttribute("userRole");
+
         if (userId == null) return "redirect:/home";
-     
+
         try {
-            Claim savedClaim;
+            Claim savedClaim = claimService.processClaimSubmission(claim, userId, userRole);
+
+            // Redirect based on role
             if ("AGENT".equalsIgnoreCase(userRole)) {
-                savedClaim = claimService.submitClaimByAgent(claim);
+           	 logger.info("agent submitted claim for policy {} for user {}",claim.getPolicy().getPolicyId(),userId);
+
                 return "redirect:/claims/" + savedClaim.getClaimId();
             } else {
-                savedClaim = claimService.processClaimSubmission(claim, userId, userRole);
+            	 logger.info("User{} with role {} is submitted claim for policy {}",userId,claim.getPolicy().getPolicyId());
                 return "redirect:/claims/my-claims";
             }
+
         } catch (RuntimeException ex) {
-            result.reject("error.claim", ex.getMessage());
-     
+        	logger.error("Error submitting claim:{}",ex.getMessage());
+        	result.rejectValue("claimAmount", "error.claimAmount", ex.getMessage());
             // Re-populate policies for the form based on role
             model.addAttribute("userRole", userRole);
             if ("AGENT".equalsIgnoreCase(userRole)) {
@@ -83,8 +96,8 @@ public class ClaimController {
             } else {
                 model.addAttribute("policies", policyService.getPoliciesByUser(userId));
             }
-     
-            return "claims/submit-claim";
+
+            return "claims/submit-claim"; //exception so resubmit claim
         }
     }
  
@@ -117,9 +130,11 @@ public class ClaimController {
     // ---------------- Update claim status ----------------
     @PostMapping("/{claimId}/status")
     public String updateClaimStatus(@PathVariable Integer claimId, ClaimStatus status, HttpSession session) {
-        claimService.updateClaimStatus(claimId, status);
         String role = (String) session.getAttribute("userRole");
         if ("CLAIM_ADJUSTER".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
+         claimService.updateClaimStatus(claimId, status);
+       	 logger.info("Claim {} status updated to {}",claimId,status);
+
             return "redirect:/claims/review";
         }
         return "redirect:/claims/my-claims";
@@ -130,8 +145,8 @@ public class ClaimController {
     public String reviewClaims(HttpSession session, Model model) {
         String userRole = (String) session.getAttribute("userRole");
         Integer loggedInUserId = (Integer) session.getAttribute("loggedInUserId");
- 
-        List<Claim> claims = switch (userRole.toUpperCase()) {
+
+        List<Claim> claims = switch (userRole) {
             case "ADMIN" -> claimService.getAllClaims();
             case "CLAIM_ADJUSTER" -> claimService.getClaimsByAdjuster(loggedInUserId);
             default -> null;
@@ -142,7 +157,7 @@ public class ClaimController {
         model.addAttribute("claims", claims);
         model.addAttribute("userRole", userRole);
  
-        if ("ADMIN".equalsIgnoreCase(userRole)) {
+        if ("ADMIN".equalsIgnoreCase(userRole)) { //only admin needs list of adjusters 
             model.addAttribute("adjusters", userService.getAllAdjusters());
         }
  
@@ -153,13 +168,14 @@ public class ClaimController {
     @PostMapping("/assign")
     public String assignAdjuster(@RequestParam Integer claimId, @RequestParam Integer adjusterId) {
         claimService.assignAdjuster(claimId, adjusterId);
+      	 logger.info("Admin assigned adjuster to claim {}",adjusterId,claimId);
+
         return "redirect:/claims/review";
     }
  
     // ---------------- View all claims for a policy (Policyholder) ----------------
     @GetMapping("/policy")
-    public String viewClaimsByPolicyholder(@RequestParam(value = "policyId", required = false) Integer policyId,
-                                           HttpSession session, Model model) {
+    public String viewClaimsByPolicyholder(@RequestParam Integer policyId,HttpSession session, Model model) {
         Integer userId = (Integer) session.getAttribute("loggedInUserId");
         model.addAttribute("userRole", "POLICYHOLDER");
  

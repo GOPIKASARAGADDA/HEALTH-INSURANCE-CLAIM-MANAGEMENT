@@ -19,9 +19,11 @@
   <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card p-4 shadow" style="max-width: 500px; width: 100%">
       <h2 class="text-center mb-4 text-primary fw-bold">Create Account</h2>
- 
+	  <div th:if="${adminExistsError}" class="alert alert-warning text-center">
+	  				  You cannot register as admin.
+	  				</div>
       <form th:action="@{/auth/register}" th:object="${user}" method="post">
-        
+		
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
           <input type="text" class="form-control" th:field="*{username}" id="username" placeholder="Choose a username" required />
@@ -41,11 +43,11 @@
         <div class="mb-3">
           <label for="role" class="form-label">Role</label>
           <select class="form-select" th:field="*{role}" id="role" required>
-            <option value="" disabled selected>Select role</option>
+            <option value="" selected>Select role</option>
             <option value="POLICYHOLDER">Policyholder</option>
             <option value="AGENT" disabled>Agent</option>
             <option value="CLAIM_ADJUSTER" disabled>Claim Adjuster</option>
-            <option value="ADMIN" disabled>Admin</option>
+            <option value="ADMIN" >Admin</option>
           </select>
         </div>
  

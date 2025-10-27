@@ -20,7 +20,6 @@ public class Claim {
     private Integer claimId;
  
     @NotNull(message="Policy must be selected")
-    
     @ManyToOne
     @JoinColumn(name = "policyId", nullable = false)
     private Policy policy;
@@ -43,15 +42,15 @@ public class Claim {
  
     @ManyToOne
     @JoinColumn(name = "adjusterId")
-    private User adjuster; // Nullable until assigned
+    private User adjuster; 
     
  
-    // --------- NEW: One-to-Many mapping to Documents ---------
+    // One-to-Many mapping to Document
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Document> documents;
  
-    // --------- Getters & Setters ---------
-    
+  
+  //getter and setter  
     
     
     public Integer getClaimId() {

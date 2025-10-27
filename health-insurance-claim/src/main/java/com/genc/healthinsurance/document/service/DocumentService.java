@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,6 +21,9 @@ import com.genc.healthinsurance.document.repository.DocumentRepository;
  
 @Service
 public class DocumentService {
+	private static final Logger logger=LoggerFactory.getLogger(DocumentService.class);
+
+	
  
     @Autowired
     private DocumentRepository documentRepository;
@@ -28,6 +33,8 @@ public class DocumentService {
  
     public Document uploadDocument(Document document, MultipartFile file) {
         if (document.getClaim() == null || document.getClaim().getClaimId() == null) {
+        	logger.warn("claimId is null");
+
             throw new RuntimeException("Claim ID must not be null");
         }
      
@@ -53,6 +60,7 @@ public class DocumentService {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
      
         } catch (IOException e) {
+        	logger.error("file couldnt be uploaded");
             throw new RuntimeException("File upload failed: " + e.getMessage());
         }
      
@@ -65,11 +73,10 @@ public class DocumentService {
         DocumentType docType = DocumentType.valueOf(ext);
         document.setDocumentType(docType);
      
+        logger.info("document upload success");
         return documentRepository.save(document);
     }
      
-     
- 
     public Document getDocumentById(Long documentId) {
        
         return documentRepository.findById(documentId)
@@ -80,18 +87,28 @@ public class DocumentService {
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new RuntimeException("Document not found"));
      
-        // Correctly resolve the path
-        Path filePath = Paths.get("src/main/resources/static", doc.getDocumentPath());
+     // Extract relative path from documentPath
+        String relativePath = doc.getDocumentPath(); // e.g., "/uploads/file.pdf"
+         
+        // Remove leading slash if exists
+        if (relativePath.startsWith("/")) {
+            relativePath = relativePath.substring(1);
+        }
+         
+        Path filePath = Paths.get(relativePath); // Now points correctly to project-root/uploads/file.pdf
         try {
             if (Files.exists(filePath)) {
                 Files.delete(filePath);
+                System.out.println("File deleted: " + filePath.toAbsolutePath());
             } else {
                 System.out.println("File not found for deletion: " + filePath.toAbsolutePath());
             }
         } catch (IOException e) {
+        	logger.error("file couldnt be deleted");
             throw new RuntimeException("Failed to delete file: " + e.getMessage());
         }
-     
+         
+     logger.info("document deletion successful");
         // Delete from DB
         documentRepository.deleteById(documentId);
     }

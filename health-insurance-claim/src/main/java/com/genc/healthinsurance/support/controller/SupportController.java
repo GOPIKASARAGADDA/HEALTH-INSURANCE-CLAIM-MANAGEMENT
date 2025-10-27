@@ -1,28 +1,37 @@
 package com.genc.healthinsurance.support.controller;
  
 import java.util.List;
- 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
- 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.genc.healthinsurance.auth.entity.User;
 import com.genc.healthinsurance.support.entity.SupportTicket;
 import com.genc.healthinsurance.support.service.SupportService;
- 
+
 import jakarta.servlet.http.HttpSession;
  
 @Controller
 @RequestMapping("/support")
 public class SupportController {
- 
+	private static final Logger logger=LoggerFactory.getLogger(SupportController.class);
+
+	
     @Autowired
     private SupportService supportService;
  
     // ---------------- Show all tickets for logged-in user ----------------
     @GetMapping
     public String showUserTickets(HttpSession session, Model model) {
+    	logger.info("display tickets for user");
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null) return "redirect:/login";
  
@@ -36,6 +45,8 @@ public class SupportController {
     // ---------------- Create new ticket ----------------
     @PostMapping("/create")
     public String createTicket(@ModelAttribute("ticket") SupportTicket ticket, HttpSession session) {
+    	logger.info("create ticket by user");
+
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null) return "redirect:/login";
  
@@ -46,6 +57,8 @@ public class SupportController {
     // ---------------- View single ticket details ----------------
     @GetMapping("/{ticketId}")
     public String viewTicket(@PathVariable Integer ticketId, Model model, HttpSession session) {
+    	logger.info("request to view ticket details for ticketId{}",ticketId);
+
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null) return "redirect:/login";
  
@@ -62,6 +75,8 @@ public class SupportController {
         if (user == null) return "redirect:/login";
  
         try {
+        	logger.info("request to resolve ticket with ticketId{}",ticketId);
+
             supportService.resolveTicket(ticketId, user);
         } catch (RuntimeException ex) {
             // Optionally, pass error message to model/session for frontend
@@ -79,7 +94,8 @@ public class SupportController {
         if (user.getRole().name().equalsIgnoreCase("POLICYHOLDER")) {
             return "redirect:/support";
         }
- 
+    	logger.info("request to view all tickets details for admin/adjuster");
+
         List<SupportTicket> tickets = supportService.getAllTickets();
         model.addAttribute("tickets", tickets);
         model.addAttribute("user", user);

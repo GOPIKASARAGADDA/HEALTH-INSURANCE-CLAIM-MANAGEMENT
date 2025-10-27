@@ -99,6 +99,9 @@
 					               class="form-control"
 					               placeholder="Enter claim amount"
 					               required min="1">
+								   <div  th:if="${#fields.hasErrors('claimAmount')}" 
+								   th:errors="*{claimAmount}" class="text-danger"></div>
+								   								   
 					    </div>
 					 
 					    <!-- Optional Description -->

@@ -1,4 +1,3 @@
-// src/main/java/com/genc/healthinsurance/config/WebConfig.java
 
 package com.genc.healthinsurance.config;
 

@@ -33,7 +33,7 @@ public class Document {
     private DocumentType documentType;
  
     @Column(nullable = false)
-    private String documentPath; // stored path (file system or cloud)
+    private String documentPath; // stored path (file system)
 
 	public Long getDocumentId() {
 		return documentId;

@@ -12,9 +12,8 @@ import com.genc.healthinsurance.policy.entity.Policy;
 
 @Repository
 public interface ClaimRepository extends JpaRepository<Claim, Integer> {
-    // Fulfills the requirement to get claims associated with a policyholder (indirectly via policyId)
-    List<Claim> findByPolicy(Policy policy);
+    List<Claim> findByPolicy(Policy policyId);
  // Fetch all claims for a specific user
-    List<Claim> findByUser(User user);
+    List<Claim> findByUser(User userId);
     List<Claim> findByAdjuster(User adjusterId);
 }
